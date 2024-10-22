@@ -1,0 +1,45 @@
+---
+- name: Allow all HTTP access
+  ufw:
+    rule: allow
+    dest: 1.2.3.4
+    port: 80
+    proto: tcp
+    # src: 1.2.3.5
+
+- name: Allow all HTTPS access
+  ufw:
+    rule: allow
+    dest: 1.2.3.4
+    port: 443
+    proto: tcp
+    # src: 1.2.3.5
+
+- name: Allow all SSH access
+  ufw:
+    rule: allow
+    dest: 1.2.3.4
+    port: 22
+    proto: tcp
+    # src: 1.2.3.5
+
+- name: Allow internal traffic from the device
+  ufw:
+    rule: allow
+    src: 10.200.16.100
+    dest: 10.200.16.101
+    port: 9000
+    proto: tcp
+
+- name: Allow provisioning traffic
+  ufw:
+    rule: allow
+    src: 192.168.0.0/16
+    port: 22
+    proto: tcp
+
+- name: Implicit deny, set logging and enable firewall
+  ufw:
+    state: enabled
+    policy: reject
+    logging: on

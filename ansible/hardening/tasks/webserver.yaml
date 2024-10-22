@@ -1,0 +1,62 @@
+---
+- name: Update apt package cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install apache
+  apt:
+    pkg:
+      - apache2
+    state: latest
+
+- name: Create document root
+  file:
+    path: "/var/www/{{ http_host }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Copy index test page
+  template:
+    src: "index.html.j2"
+    dest: "/var/www/{{ http_host }}/index.html"
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Set up Apache Virt. Host HTTP
+  template:
+    src: "apache_80.conf.j2"
+    dest: "/etc/apache2/sites-available/{{ http_conf }}"
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Set up Apache Virt. Host HTTPS
+  template:
+    src: "apache_443.conf.j2"
+    dest: "/etc/apache2/sites-available/{{ https_conf }}"
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Create a self signed Cert
+  shell: "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/{{ http_host }}.key -out /etc/ssl/certs/{{ http_host }}.crt -subj \"/C=DE/ST=BY/L=Neumarkt/O=PastaCompany/OU=PenneArrabiata/CN=localhost\""
+
+- name: Enable SSL Module
+  shell: /usr/sbin/a2enmod ssl
+
+- name: Enable new site (HTTP)
+  shell: /usr/sbin/a2ensite {{ http_conf }}
+
+- name: Enable new site (HTTPS)
+  shell: /usr/sbin/a2ensite {{ https_conf }}
+
+#- name: Disable default Apache site
+#  shell: /usr/sbin/a2dissite 000-default.conf
+# Do not disable default website, in order to verify hostheader working
+
+# https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-install-and-set-up-apache-on-ubuntu-18-04
+# https://medium.com/@ravipatel.it/step-by-step-guide-creating-installing-and-configuring-ssl-certificate-on-apache-server-vm-7587193dbef6
