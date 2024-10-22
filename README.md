@@ -5,15 +5,16 @@ generic security hardening, then installs apache and creates a template for a gi
 website. 
 
 # Directory Structure
-. <br />
-├── templates <br />
-└── ansible <br />
-    └── hardening <br />
-        ├── files <br />
-        ├── tasks <br />
-        ├── templates <br />
-        └── vars <br />
- <br />
+```
+.
+├── templates
+└── ansible
+    └── hardening
+        ├── files
+        ├── tasks
+        ├── templates
+        └── vars
+```
 (Empty directories are ommited for simplicity.)
 
 The root directory contains main terraform code as well as the variables needed
