@@ -1,0 +1,6 @@
+---
+- name: Adding VLAN tag
+  script: addvlantag.sh "{{ intern_addr }}"
+
+# Interfaces IPs are coming from cloud-init during provisioning. VLAN
+# Id 150 needs to be assigned to internal interface.

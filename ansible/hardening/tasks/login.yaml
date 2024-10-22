@@ -1,0 +1,16 @@
+---
+- name: Force users to change their passwords
+  shell: |
+    sed -i -e 's/^ENCRYPT_METHOD.*$/ENCRYPT_METHOD SHA512/'   /etc/login.defs
+    sed -i -e 's/^PASS_MAX_DAYS.*$/PASS_MAX_DAYS   90/'       /etc/login.defs
+    sed -i -e 's/^PASS_MIN_DAYS.*$/PASS_MIN_DAYS    7/'       /etc/login.defs
+    sed -i -e 's/^PASS_WARN_AGE.*$/PASS_WARN_AGE    7/'       /etc/login.defs
+    sed -i -e 's/^HOME_MODE.*$/HOME_MODE    700/'             /etc/login.defs
+    sed -i -e 's/^UMASK.*$/UMASK    027/'                     /etc/login.defs
+
+# Not very important as the users are forced to use ssh keys not
+# passwords by sshd config. However these are still considered
+# as best practices (in case password auth. gets enabled again)
+#
+# shell module is actually not better than lineinfile module, however
+# doing it with sed gives wider flexibility at expense of portability.

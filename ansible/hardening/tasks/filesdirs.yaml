@@ -1,0 +1,37 @@
+---
+- name: Set Ownership of grub.conf
+  file:
+    path: /boot/grub
+    owner: root
+    group: root
+    mode: og-rwx
+
+- name: Set Ownership of cron related dirs
+  file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+    mode: og-rwx
+  loop:
+    - /etc/crontab
+    - /etc/cron.hourly
+    - /etc/cron.daily
+    - /etc/cron.weekly
+    - /etc/cron.monthly
+    - /etc/cron.yearly
+    - /etc/cron.d
+
+- name: Set Ownership of sshd.conf
+  file:
+    path: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: og-rwx
+
+- name: Create a MOTD file
+  template:
+    src: motd.j2
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: 0600

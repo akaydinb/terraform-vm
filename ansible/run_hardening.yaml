@@ -1,0 +1,11 @@
+---
+- name: Run Hardening
+  hosts: provision
+  become: yes
+
+  roles:
+    - hardening
+
+# Dependencies: (sysctl) ansible-galaxy collection install ansible.posix
+#               (ufw)    ansible-galaxy collection install community.general
+# Simply Run: ansible-playbook run_hardening.yaml --e listen_addr="1.2.3.4" -e intern_addr="10.200.16.101" [ --check ]

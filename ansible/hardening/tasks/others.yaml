@@ -1,0 +1,30 @@
+---
+- name: Add nodev, noexec Options to insecure Partitions
+  shell: |
+    sed -i 's#\(/dev/shm\s*\S*\s*defaults\)\S*#\1,nodev,noexec,nosuid#' /etc/fstab
+    sed -i 's#\(/dev/tmp\s*\S*\s*defaults\)\S*#\1,nodev,noexec,nosuid#' /etc/fstab
+#   sed -i 's#\(/dev/home\s*\S*\s*defaults\)\S*#\1,nodev,noexec,nosuid#' /etc/fstab
+
+- name: Disable Mounting of insecure Filesystems
+  lineinfile:
+    dest: /etc/modprobe.d/custom.conf
+    line: "install hfsplus /bin/true\ninstall squashfs /bin/true"
+    create: True
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Restrict Core Dumps
+  lineinfile:
+    dest: /etc/security/limits.conf
+    line: "* hard core 0"
+
+- name: Disable IPv6 on kernel level
+  lineinfile:
+    dest: /etc/modprobe.d/ipv6.conf
+    line: "options ipv6 disable=1"
+    create: True
+    owner: root
+    group: root
+    mode: 0600
+

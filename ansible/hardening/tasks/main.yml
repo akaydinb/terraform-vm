@@ -1,0 +1,16 @@
+---
+- include_tasks: sysctl.yaml
+- include_tasks: filesdirs.yaml
+- include_tasks: sshd.yaml
+- include_tasks: login.yaml
+- include_tasks: others.yaml
+
+- include_tasks: interfaces.yaml
+- include_tasks: firewall.yaml
+- include_tasks: webserver.yaml
+
+- name: Reboot the machine to enable all the changes
+  reboot:
+    reboot_timeout: 3
+    msg: "Rebooting the machine in 3 seconds to enable all the changes"
+  ignore_errors: yes

@@ -1,0 +1,11 @@
+<VirtualHost {{ listen_addr }}:443>
+   ServerAdmin webmaster@{{ http_host }}
+   ServerName {{ http_host }}
+   ServerAlias www.{{ http_host }}
+   DocumentRoot /var/www/{{ http_host }}
+   ErrorLog ${APACHE_LOG_DIR}/error.log
+   CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+   SSLCertificateFile    /etc/ssl/certs/{{ http_host }}.crt
+   SSLCertificateKeyFile /etc/ssl/private/{{ http_host }}.key
+</VirtualHost>

@@ -1,0 +1,51 @@
+---
+- name: Allow only ssh v2
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: "Protocol 2"
+    insertbefore: "^(#)?Port"
+  # Let this line be above the port definition, not to make it
+  # conflicting with host definitions
+
+- name: Secure ssh daemon
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regex: "^(#)?{{item.key}}"
+    line: "{{item.key}} {{item.value}}"
+    state: present
+  loop:
+    - { key: "AddressFamily", value: "inet" }       ## inet: ipv4 only
+    - { key: "ListenAddress", value: "{{ listen_addr }}" }
+    - { key: "X11Forwarding", value: "no" }
+    - { key: "MaxAuthTries",  value: "2" }
+    - { key: "ClientAliveInterval",  value: "300" }
+    - { key: "ClientAliveCountMax",  value: "0" }
+    - { key: "Banner",  value: "/etc/motd" }
+    - { key: "TCPKeepAlive",  value: "no" }
+    - { key: "UseDNS",  value: "no" }
+    - { key: "AllowAgentForwarding",  value: "no" }
+    - { key: "PasswordAuthentication",  value: "no" }
+#    - { key: "PermitRootLogin",  value: "prohibit-password" }
+#    - { key: "Ciphers", value:  "aes192-ctr,aes256-ctr,aes192-cbc,aes256-cbc,aes256-gcm@openssh.com" }
+#    - { key: "LogLevel",  value: "VERBOSE" }
+#    - { key: "AllowUsers",  value: "root@11.22.33.*" }
+
+# Notes:
+# 1. ListenAddress is customizable and it should be the IP of the
+#    of the external interface, given by the caller as an external
+#    param. to ansible script.
+# 2. Password authentication is disabled. The server is only available
+#    via ssh key used for provisioning.
+# 3. PermitRootLogin is a fundamental setting to be disabled for hardening.
+#    OTOH, ansible script is using root for initial provisioning and
+#    the def. val. of this setting (which is prohibit-password) i.e.
+#    only allows logins with ssh key. This is still relatively safe,
+#    yet can be changed to "no", in case needed.
+# 4. Ciphers can be customized or restricted to a smaller subset, in
+#    case a cipher got considered insecure in the future.
+# 5. LogLevel is set to INFO by def. but some security best practices
+#    still recommend VERBOSE instead of INFO.
+# 6. AllowUsers is another security measure to restrict access on a
+#    specific user and/or specific IP block.
+# TODO: Generate a random SSH key and remove provisioning key from
+#    authentication.

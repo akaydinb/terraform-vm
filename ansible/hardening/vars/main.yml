@@ -1,0 +1,4 @@
+---
+http_host: "pennearrabiata.com"
+http_conf: "{{ http_host }}_80.conf"
+https_conf: "{{ http_host }}_443.conf"
