@@ -38,6 +38,7 @@ called "ubuntu-template-mini" in the main directory of the vm datastore
 "Datastore01". This is a minimal ubuntu installation without any special
 customization. The public key will be added to root using cloud-init. 
 
+TODO: Initialize git-crypt here and encrypt priv key with git-crypt
 TODO: Even though terraform outputs the interface IPs to stdout, it
 possibly could put the provisioning IP of the VM to "inventory.ini",
 to automatize the provisioning. 
